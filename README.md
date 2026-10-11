@@ -1,8 +1,8 @@
 # Tun Labs Town
 
-A live isometric bot studio for Tun Labs. Bots walk to a project station while they work, wait on the owner with a speech bubble, or rest on the couch. Finished work stays on the map as a little building.
+A live island studio for Tun Labs. Bots walk the sandy paths to a project clearing while they work, wait on the owner with a speech bubble, or rest in the garden. Finished work pops in around that clearing.
 
-The page is plain HTML, CSS, and JavaScript. There is no build step. Bot art is the mochi sprite set in `assets/sprites/` (`idle`, `walk1`, `walk2`, `work`, and `rest` for each bot). GitHub Pages should serve this repository from the **main** branch, **root** folder, at [https://tspheak.github.io/botlive/](https://tspheak.github.io/botlive/).
+The page is plain HTML, CSS, and JavaScript. There is no build step. The map is the painted island in `assets/town/`. Bot art is the mochi sprite set in `assets/sprites/` (`idle`, `walk1`, `walk2`, `work`, and `rest` for each bot). Bots follow the sandy paths between clearings. GitHub Pages should serve this repository from the **main** branch, **root** folder, at [https://tspheak.github.io/botlive/](https://tspheak.github.io/botlive/).
 
 ## Run it locally
 
