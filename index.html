@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Tun Labs Town — a live isometric studio where bots walk to work, wait on you, and leave finished buildings behind.">
+  <meta name="description" content="Tun Labs Town — a live island studio where bots walk the sandy paths, wait on you, and leave finished work in the clearings.">
   <meta name="theme-color" content="#8ecae6">
   <title>Tun Labs Town — Live Bot Studio</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -37,13 +37,18 @@
     </header>
 
     <p id="error" class="error" hidden role="status"></p>
-    <p id="demo-banner" class="demo-banner" hidden>Demo mode cycles sample activity so you can see every animation. It does not change <code>status.json</code>.</p>
 
     <div class="layout">
-      <section class="stage-wrap" aria-label="Isometric town map">
+      <section class="stage-wrap" aria-label="Tun Labs town map">
         <div class="stage" id="stage">
           <div class="viewport" id="viewport">
+            <div class="cloud html-cloud c1 map-cloud" aria-hidden="true"></div>
+            <div class="cloud html-cloud c2 map-cloud" aria-hidden="true"></div>
             <div class="world" id="world"></div>
+          </div>
+          <div id="demo-badge" class="demo-badge" hidden>
+            <span>Demo mode</span>
+            <button type="button" id="demo-back">Back to live</button>
           </div>
           <div class="labels" id="labels" aria-hidden="true"></div>
           <div class="hits" id="hits"></div>
