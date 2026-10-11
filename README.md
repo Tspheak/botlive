@@ -2,7 +2,7 @@
 
 A live isometric bot studio for Tun Labs. Bots walk to a project station while they work, wait on the owner with a speech bubble, or rest on the couch. Finished work stays on the map as a little building.
 
-The page is plain HTML, CSS, and JavaScript. There is no build step. GitHub Pages should serve this repository from the **main** branch, **root** folder, at [https://tspheak.github.io/botlive/](https://tspheak.github.io/botlive/).
+The page is plain HTML, CSS, and JavaScript. There is no build step. Bot art is the mochi sprite set in `assets/sprites/` (`idle`, `walk1`, `walk2`, `work`, and `rest` for each bot). GitHub Pages should serve this repository from the **main** branch, **root** folder, at [https://tspheak.github.io/botlive/](https://tspheak.github.io/botlive/).
 
 ## Run it locally
 
@@ -140,13 +140,13 @@ When the bar reaches 100 and the work is really done, set Ledger to `idle` (or t
 
 | Bot | Role | Look |
 | --- | --- | --- |
-| Atlas | Coordinator | Compass and explorer cap |
-| Dex | App developer | Hard hat and wrench |
-| Ledger | PayCheck Easy dev | Calculator and coin |
-| Iris | QA tester | Magnifier and test tube |
-| Harbor | Release manager | Sailor hat and anchor |
-| Scout | Researcher | Bucket hat and binoculars |
-| Vista | Etsy shop manager | Beret, shopping bag, and brush |
+| Atlas | Coordinator | Mint mochi in a paper-boat hat |
+| Dex | App developer | Peach mochi in a paper-boat hat |
+| Ledger | PayCheck Easy dev | Green mochi in a paper-boat hat |
+| Iris | QA tester | Lilac mochi in a paper-boat hat |
+| Harbor | Release manager | Blue mochi in a paper-boat hat |
+| Scout | Researcher | Khaki mochi with a pack and a paper-boat hat |
+| Vista | Etsy shop manager | Pink mochi in a paper-boat hat |
 
 ## Pages setting
 

@@ -110,6 +110,25 @@
     { id: 'vista', name: 'Vista', role: 'Etsy shop manager', sips: true, delay: 1.05, color: '#be123c' }
   ];
 
+  var POSES = ['idle', 'walk1', 'walk2', 'work', 'rest'];
+  var WALK_FRAME_MS = 200;
+
+  function spriteSrc(id, pose) {
+    return new URL('assets/sprites/' + id + '_' + pose + '.png', document.baseURI).href;
+  }
+
+  function preloadSprites() {
+    BOT_META.forEach(function (meta) {
+      POSES.forEach(function (pose) {
+        var img = new Image();
+        img.decoding = 'async';
+        img.src = spriteSrc(meta.id, pose);
+      });
+    });
+  }
+
+  preloadSprites();
+
   var road = new Set();
   var blocked = new Set();
   var BOTS = [];
@@ -130,7 +149,7 @@
   var svgPoint = null;
   var lastFetch = 0;
 
-  var svg, world, viewport, stage, sceneryEl, botsLayer, confettiLayer, labelsEl, leadersSvg;
+  var svg, world, viewport, stage, sceneryEl, botsLayer, confettiLayer, labelsEl, leadersSvg, actorsEl;
 
   function P(x, y, z) {
     return [(x - y) * TW / 2, (x + y) * TH / 2 - (z || 0)];
@@ -387,148 +406,6 @@
     return simplify(pts);
   }
 
-  function chibi(o) {
-    var eye = o.eye || 3.45;
-    var d = o.delay || 0;
-    return '' +
-      '<ellipse class="leg l" cx="-6.2" cy="-2.4" rx="4.7" ry="3.2" fill="' + o.leg + '" stroke="#1f2937" stroke-width="1.45"/>' +
-      '<ellipse class="leg r" cx="6.2" cy="-2.4" rx="4.7" ry="3.2" fill="' + o.leg + '" stroke="#1f2937" stroke-width="1.45"/>' +
-      (o.behind || '') +
-      '<ellipse cx="-13.2" cy="-16" rx="4.3" ry="5.2" fill="' + o.body + '" stroke="#1f2937" stroke-width="1.3"/>' +
-      '<ellipse cx="13.2" cy="-16" rx="4.3" ry="5.2" fill="' + o.body + '" stroke="#1f2937" stroke-width="1.3"/>' +
-      '<ellipse cx="0" cy="-17.5" rx="12.6" ry="11" fill="' + o.body + '" stroke="#1f2937" stroke-width="1.6"/>' +
-      (o.chest || '') +
-      '<ellipse cx="0" cy="-40" rx="' + (o.hairRx || 13.4) + '" ry="' + (o.hairRy || 12.2) + '" fill="' + o.hair + '"/>' +
-      '<circle cx="0" cy="-37.5" r="12.4" fill="' + o.skin + '" stroke="#1f2937" stroke-width="1.6"/>' +
-      '<ellipse cx="-3.5" cy="-42.5" rx="3.6" ry="2" fill="#fff" opacity="0.35"/>' +
-      '<g class="eyes" style="animation-delay:' + d + 's">' +
-        '<ellipse cx="-5.1" cy="-39" rx="' + eye + '" ry="' + (eye + 0.4) + '" fill="#fff" stroke="#1f2937" stroke-width="1.05"/>' +
-        '<ellipse cx="5.3" cy="-39" rx="' + eye + '" ry="' + (eye + 0.4) + '" fill="#fff" stroke="#1f2937" stroke-width="1.05"/>' +
-        '<g class="pupils" style="animation-delay:' + (d + 0.6) + 's">' +
-          '<circle cx="-4.3" cy="-38.7" r="1.55" fill="#1f2937"/>' +
-          '<circle cx="6.1" cy="-38.7" r="1.55" fill="#1f2937"/>' +
-          '<circle cx="-3.7" cy="-39.4" r="0.55" fill="#fff"/>' +
-          '<circle cx="6.7" cy="-39.4" r="0.55" fill="#fff"/>' +
-        '</g>' +
-      '</g>' +
-      '<path d="M-3.4,-32.5 Q0,-29.5 3.4,-32.5" fill="none" stroke="#9f1239" stroke-width="1.35" stroke-linecap="round"/>' +
-      '<ellipse cx="-9" cy="-33.8" rx="2.2" ry="1.15" fill="#fb7185" opacity="0.82"/>' +
-      '<ellipse cx="9" cy="-33.8" rx="2.2" ry="1.15" fill="#fb7185" opacity="0.82"/>' +
-      (o.bangs || '') +
-      (o.hat || '') +
-      (o.prop || '');
-  }
-
-  function avatarMarkup(id) {
-    var meta = BOT_META.filter(function (b) { return b.id === id; })[0];
-    var delay = meta ? meta.delay : 0;
-    if (id === 'atlas') {
-      return chibi({
-        delay: delay, body: '#0d9488', leg: '#115e59', skin: '#f3c6a5', hair: '#6b3f2a',
-        chest: '<circle cx="1" cy="-18" r="4.8" fill="#fff" stroke="#1f2937" stroke-width="1.1"/>' +
-          '<polygon points="1,-22.2 2.4,-17.4 -0.2,-16.8" fill="#ef4444"/>' +
-          '<polygon points="1,-14  -0.3,-18.2 2,-17.6" fill="#1f2937"/>',
-        hat: '<ellipse cx="0" cy="-48" rx="16.2" ry="4" fill="#115e59" stroke="#1f2937" stroke-width="1.3"/>' +
-          '<path d="M-9.2,-48 Q0,-62 9.2,-48" fill="#0f766e" stroke="#1f2937" stroke-width="1.4"/>' +
-          '<circle cx="0" cy="-56.5" r="2.1" fill="#fbbf24" stroke="#1f2937" stroke-width="0.7"/>',
-        prop: '<g transform="translate(16,-24)"><g data-fx="compass">' +
-          '<circle r="6.2" fill="#fff" stroke="#1f2937" stroke-width="1.3"/>' +
-          '<polygon points="0,-5 1.6,1.2 -1.2,1.2" fill="#ef4444"/>' +
-          '<polygon points="0,5 -1.3,-0.6 1.3,-0.6" fill="#1f2937"/>' +
-          '</g></g>'
-      });
-    }
-    if (id === 'dex') {
-      return chibi({
-        delay: delay, body: '#fb923c', leg: '#c2410c', skin: '#f6c7a8', hair: '#3f2a1d',
-        hat: '<ellipse cx="0" cy="-47.5" rx="16" ry="4.3" fill="#facc15" stroke="#1f2937" stroke-width="1.35"/>' +
-          '<path d="M-10.5,-48 Q0,-62.5 10.5,-48" fill="#fde047" stroke="#1f2937" stroke-width="1.4"/>' +
-          '<path d="M-7,-50.5 H7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>',
-        prop: '<g transform="translate(16,-23)"><g data-fx="hammer">' +
-          '<path d="M0,6 V-7" stroke="#64748b" stroke-width="3.1" stroke-linecap="round"/>' +
-          '<path d="M-4.2,-8.2 a4.2,4.2 0 0 1 8.4,0" fill="none" stroke="#475569" stroke-width="2.7" stroke-linecap="round"/>' +
-          '</g></g>'
-      });
-    }
-    if (id === 'ledger') {
-      return chibi({
-        delay: delay, body: '#16a34a', leg: '#14532d', skin: '#e8b892', hair: '#1f2937', hairRy: 11,
-        chest: '<rect x="-7" y="-22" width="14" height="6" rx="1" fill="#fff7ed"/>' +
-          '<circle cx="5" cy="-16" r="3.3" fill="#fbbf24" stroke="#1f2937" stroke-width="0.8"/>' +
-          '<text x="5" y="-14.6" text-anchor="middle" font-size="5" font-weight="700" fill="#92400e">$</text>',
-        bangs: '<g fill="none" stroke="#1f2937" stroke-width="1.25">' +
-          '<circle cx="-5.1" cy="-39" r="5.15"/><circle cx="5.3" cy="-39" r="5.15"/>' +
-          '<path d="M-0.1,-39 H0.5"/>' +
-          '</g>',
-        prop: '<g transform="translate(15,-18)">' +
-          '<rect x="-9" y="-7" width="16" height="12" rx="2" fill="#14532d" stroke="#1f2937" stroke-width="1"/>' +
-          '<g data-fx="type">' +
-            '<rect data-i="0" x="-7" y="-4" width="3.2" height="3" rx="0.4" fill="#86efac"/>' +
-            '<rect data-i="1" x="-2.6" y="-4" width="3.2" height="3" rx="0.4" fill="#bbf7d0"/>' +
-            '<rect data-i="2" x="1.8" y="-4" width="3.2" height="3" rx="0.4" fill="#86efac"/>' +
-          '</g></g>'
-      });
-    }
-    if (id === 'iris') {
-      return chibi({
-        delay: delay, body: '#d8b4fe', leg: '#7e22ce', skin: '#fbe0d0', hair: '#7e22ce',
-        hairRx: 15.2, hairRy: 14.5, eye: 4.05,
-        bangs: '<path d="M-11,-45 Q0,-39 11,-45 Q6,-47.5 0,-46.5 Q-6,-47.5 -11,-45" fill="#7e22ce"/>',
-        prop: '<g transform="translate(-16,-22)">' +
-          '<rect x="-3" y="-16" width="6" height="16" rx="3" fill="#f5d0fe" stroke="#1f2937" stroke-width="1"/>' +
-          '<rect x="-3" y="-5" width="6" height="7" rx="2" fill="#f472b6"/>' +
-          '</g>' +
-          '<g transform="translate(16,-26)"><g data-fx="look">' +
-            '<circle r="7" fill="rgba(224,242,254,.72)" stroke="#1f2937" stroke-width="1.6"/>' +
-            '<line x1="5" y1="5" x2="11" y2="12" stroke="#a16207" stroke-width="2.6" stroke-linecap="round"/>' +
-          '</g></g>'
-      });
-    }
-    if (id === 'harbor') {
-      return chibi({
-        delay: delay, body: '#2563eb', leg: '#1e3a8a', skin: '#8d5a3c', hair: '#3b2416',
-        chest: '<rect x="-9" y="-19" width="18" height="2.6" rx="1" fill="#fff"/>' +
-          '<path d="M-4,-25 L0,-18.5 L4,-25" fill="#ef4444" stroke="#1f2937" stroke-width="0.9"/>',
-        hat: '<ellipse cx="0" cy="-48" rx="15" ry="3.8" fill="#1e3a8a" stroke="#1f2937" stroke-width="1.25"/>' +
-          '<path d="M-9,-48 Q0,-61 9,-48" fill="#fff" stroke="#1f2937" stroke-width="1.3"/>' +
-          '<circle cx="0" cy="-54" r="2.3" fill="none" stroke="#1d4ed8" stroke-width="1.3"/>' +
-          '<path d="M0,-51.8 V-48.6 M-2.2,-49.4 H2.2" stroke="#1d4ed8" stroke-width="1.15" fill="none"/>',
-        prop: '<g transform="translate(16,-20)"><g data-fx="anchor">' +
-          '<circle cy="-9" r="3.1" fill="none" stroke="#1f2937" stroke-width="1.6"/>' +
-          '<path d="M0,-6 V5 M-5.2,2.2 Q0,8 5.2,2.2" fill="none" stroke="#1f2937" stroke-width="1.7" stroke-linecap="round"/>' +
-          '</g></g>'
-      });
-    }
-    if (id === 'scout') {
-      return chibi({
-        delay: delay, body: '#d6b48c', leg: '#92400e', skin: '#e0a56a', hair: '#5c4033',
-        chest: '<path d="M-8,-24 Q0,-16 8,-24 L7,-12 H-7 Z" fill="#3f6212" stroke="#1f2937" stroke-width="1"/>',
-        bangs: '<circle cx="-6.2" cy="-34.2" r="0.7" fill="#9a3412"/><circle cx="-4.2" cy="-33.2" r="0.55" fill="#9a3412"/><circle cx="6" cy="-34" r="0.7" fill="#9a3412"/>',
-        hat: '<ellipse cx="0" cy="-47.2" rx="17" ry="4.3" fill="#e7cba4" stroke="#1f2937" stroke-width="1.3"/>' +
-          '<path d="M-11,-47 Q0,-58 11,-47" fill="#f3ddc4" stroke="#1f2937" stroke-width="1.3"/>',
-        prop: '<g transform="translate(0,-22)"><g data-fx="bins">' +
-          '<circle cx="-4.2" r="4.1" fill="#0f172a" stroke="#1f2937" stroke-width="1.15"/>' +
-          '<circle cx="4.2" r="4.1" fill="#0f172a" stroke="#1f2937" stroke-width="1.15"/>' +
-          '<path d="M-1,0 H1" stroke="#1f2937" stroke-width="1.6"/>' +
-          '<circle cx="-4.2" cy="-0.6" r="1.1" fill="#93c5fd"/>' +
-          '<circle cx="4.2" cy="-0.6" r="1.1" fill="#93c5fd"/>' +
-          '</g></g>'
-      });
-    }
-    return chibi({
-      delay: delay, body: '#fb7185', leg: '#be123c', skin: '#f6c8b4', hair: '#9f1239', hairRy: 13,
-      hat: '<ellipse cx="2" cy="-49" rx="12.5" ry="5" fill="#be123c" stroke="#1f2937" stroke-width="1.3"/>' +
-        '<circle cx="11" cy="-51" r="2.2" fill="#fda4af" stroke="#1f2937" stroke-width="0.8"/>',
-      prop: '<g transform="translate(-16,-16)">' +
-        '<path d="M-6,-8 H5 L3.2,6 H-4.2 Z" fill="#fb7185" stroke="#1f2937" stroke-width="1.15"/>' +
-        '<path d="M-2,-2 h3.2 v2.6 h-3.2z" fill="#fff"/>' +
-        '</g>' +
-        '<g transform="translate(15,-24)"><g data-fx="brush">' +
-          '<path d="M0,4 L5,-12" stroke="#a16207" stroke-width="2.3" stroke-linecap="round"/>' +
-          '<path d="M3.2,-10 L8,-17 L9.4,-12.5 Z" fill="#f472b6" stroke="#1f2937" stroke-width="0.8"/>' +
-        '</g></g>'
-    });
-  }
 
   function diamond(x, y, z, fill, stroke) {
     return isoPoly([P(x, y, z), P(x + 1, y, z), P(x + 1, y + 1, z), P(x, y + 1, z)], fill, stroke || 'none', 0.6);
@@ -1044,26 +921,23 @@
 
   function mountBots() {
     BOT_META.forEach(function (meta, index) {
-      var g = document.createElementNS(SVGNS, 'g');
-      g.setAttribute('class', 'actor' + (meta.sips ? ' sips' : ''));
-      g.dataset.id = meta.id;
-      g.innerHTML =
-        '<ellipse class="foot-shadow" cx="0" cy="3" rx="14" ry="5.2" fill="rgba(15,40,20,.25)"/>' +
-        '<ellipse class="ring" cx="0" cy="2" rx="16" ry="6.2" fill="none" stroke="#f97316" stroke-width="2.5"/>' +
-        '<g class="bob" style="animation-delay:' + meta.delay + 's">' +
-          '<g class="sprite">' + avatarMarkup(meta.id) + '</g>' +
-          '<g class="zzz">' +
-            '<text class="z1" x="14" y="-58" font-size="14" font-weight="800" fill="#334155" stroke="#fff" stroke-width="3" paint-order="stroke">z</text>' +
-            '<text class="z2" x="23" y="-68" font-size="16" font-weight="800" fill="#334155" stroke="#fff" stroke-width="3" paint-order="stroke">z</text>' +
-            '<text class="z3" x="33" y="-80" font-size="18" font-weight="800" fill="#1e293b" stroke="#fff" stroke-width="3" paint-order="stroke">Z</text>' +
-          '</g>' +
-          '<g class="cup"><g transform="translate(14,-30)">' +
-            '<path d="M-6,0 h9 v4.5 a4.5,4.5 0 0 1 -9,0 z" fill="#fff" stroke="#1f2937" stroke-width="1.2"/>' +
-            '<path d="M3,1.2 h2.4 a2.3,2.3 0 0 1 0,4.4 h-2.4" fill="none" stroke="#1f2937" stroke-width="1.2"/>' +
-            '<path class="steam" d="M-2,-2 q2,-3.5 0,-6" fill="none" stroke="#64748b" stroke-width="1.2" stroke-linecap="round"/>' +
-          '</g></g>' +
-        '</g>';
-      botsLayer.appendChild(g);
+      var el = document.createElement('div');
+      el.className = 'actor' + (meta.sips ? ' sips' : '');
+      el.dataset.id = meta.id;
+      el.innerHTML =
+        '<i class="shadow" aria-hidden="true"></i>' +
+        '<i class="ring" aria-hidden="true"></i>' +
+        '<div class="flip">' +
+          '<div class="motion">' +
+            '<img class="sprite" alt="" draggable="false" decoding="async">' +
+            '<span class="zzz" aria-hidden="true"><i>z</i><i>z</i><i>Z</i></span>' +
+            '<span class="steam" aria-hidden="true"></span>' +
+          '</div>' +
+        '</div>';
+      actorsEl.appendChild(el);
+      el.querySelector('.motion').style.animationDelay = (-meta.delay) + 's';
+      var img = el.querySelector('.sprite');
+      img.src = spriteSrc(meta.id, 'idle');
       var bot = {
         id: meta.id,
         name: meta.name,
@@ -1071,9 +945,10 @@
         sips: meta.sips,
         color: meta.color,
         delay: meta.delay,
-        el: g,
-        sprite: g.querySelector('.sprite'),
-        fx: g.querySelector('[data-fx]'),
+        el: el,
+        img: img,
+        flipEl: el.querySelector('.flip'),
+        pose: 'idle',
         state: 'idle',
         project: null,
         task: '',
@@ -1088,8 +963,7 @@
         slot: null,
         slotIndex: 0,
         moving: false,
-        sig: '',
-        fxDirty: false
+        sig: ''
       };
       bot.nameEl = makeNamePill(bot);
       bot.bubbleEl = makeBubble();
@@ -1166,8 +1040,12 @@
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'who';
-    var face = document.createElement('span');
-    face.innerHTML = '<svg viewBox="-26 -64 52 70" aria-hidden="true">' + avatarMarkup(bot.id) + '</svg>';
+    var face = document.createElement('img');
+    face.className = 'mochi';
+    face.alt = '';
+    face.draggable = false;
+    face.decoding = 'async';
+    face.src = spriteSrc(bot.id, 'idle');
     var name = document.createElement('span');
     name.className = 'who-name';
     name.textContent = bot.name;
@@ -1337,7 +1215,8 @@
         continue;
       }
       var sdx = dx - dy;
-      if (Math.abs(sdx) > 0.02) bot.face = sdx > 0 ? 1 : -1;
+      // Sprites face lower-left. Flip when the step runs toward screen-right.
+      if (Math.abs(sdx) > 0.02) bot.face = sdx > 0 ? -1 : 1;
       if (dist <= left) {
         bot.x = target.x;
         bot.y = target.y;
@@ -1354,43 +1233,24 @@
 
   function placeActor(bot) {
     var p = P(bot.x, bot.y, 2);
-    bot.el.setAttribute('transform', 'translate(' + p[0].toFixed(1) + ',' + p[1].toFixed(1) + ')');
-    if (bot.sprite) bot.sprite.setAttribute('transform', 'scale(' + bot.face + ',1)');
+    bot.el.style.left = (p[0] - vb.x).toFixed(1) + 'px';
+    bot.el.style.top = (p[1] - vb.y).toFixed(1) + 'px';
+    bot.el.style.zIndex = String(10 + Math.round((bot.x + bot.y) * 8));
+    bot.flipEl.style.transform = 'scaleX(' + bot.face + ')';
   }
 
-  function animateFx(bot, now) {
-    var node = bot.fx;
-    if (!node) return;
-    var type = node.getAttribute('data-fx');
-    var working = bot.state === 'working' && !bot.moving;
-    if (type === 'compass') {
-      var spin = (working ? now / 18 : now / 70) % 360;
-      node.setAttribute('transform', 'rotate(' + spin.toFixed(1) + ')');
-      return;
+  function applyPose(bot, now) {
+    var pose = 'rest';
+    if (bot.moving) {
+      pose = (!REDUCE && Math.floor(now / WALK_FRAME_MS) % 2) ? 'walk2' : 'walk1';
+    } else if (bot.state === 'working') {
+      pose = 'work';
+    } else if (bot.state === 'waiting') {
+      pose = 'idle';
     }
-    if (!working) {
-      if (bot.fxDirty) {
-        node.setAttribute('transform', type === 'bins' || type === 'coin' || type === 'type' || type === 'look' ? '' : 'rotate(-16)');
-        bot.fxDirty = false;
-      }
-      return;
-    }
-    bot.fxDirty = true;
-    if (type === 'hammer' || type === 'brush') {
-      node.setAttribute('transform', 'rotate(' + (Math.sin(now / 130) * 32).toFixed(1) + ')');
-    } else if (type === 'anchor') {
-      node.setAttribute('transform', 'rotate(' + (Math.sin(now / 280) * 14).toFixed(1) + ')');
-    } else if (type === 'look') {
-      var a = now / 480;
-      node.setAttribute('transform', 'translate(' + (Math.cos(a) * 2.4).toFixed(1) + ',' + (Math.sin(a) * 2.4).toFixed(1) + ')');
-    } else if (type === 'bins') {
-      node.setAttribute('transform', 'translate(0,' + (-8 + Math.sin(now / 260) * 1.4).toFixed(1) + ')');
-    } else if (type === 'type') {
-      node.querySelectorAll('[data-i]').forEach(function (k) {
-        var down = Math.sin(now / 80 + (+k.dataset.i)) > 0.35;
-        k.setAttribute('y', down ? '-2.6' : '-4');
-      });
-    }
+    if (bot.pose === pose) return;
+    bot.pose = pose;
+    bot.img.src = spriteSrc(bot.id, pose);
   }
 
   function animateCranes(now) {
@@ -1641,7 +1501,7 @@
     if (!narrow) undockLabels();
     BOTS.forEach(function (bot) {
       var feet = P(bot.x, bot.y, 0);
-      var head = userToStage(feet[0], feet[1] - 58);
+      var head = userToStage(feet[0], feet[1] - 92);
       var foot = userToStage(feet[0], feet[1]);
       if (!foot || !head || !town) return;
       bot.btn.style.left = foot.x + 'px';
@@ -2114,8 +1974,15 @@
     } else {
       wrap.hidden = true;
     }
-    document.getElementById('card-avatar').innerHTML =
-      '<svg viewBox="-26 -64 52 72" aria-hidden="true">' + avatarMarkup(bot.id) + '</svg>';
+    var portrait = document.getElementById('card-avatar');
+    portrait.innerHTML = '';
+    var pic = document.createElement('img');
+    pic.className = 'mochi';
+    pic.alt = '';
+    pic.draggable = false;
+    pic.decoding = 'async';
+    pic.src = spriteSrc(bot.id, 'idle');
+    portrait.appendChild(pic);
   }
 
   var cardReturn = null;
@@ -2189,7 +2056,7 @@
     BOTS.forEach(function (bot) {
       placeActor(bot);
       refreshBotVisual(bot);
-      animateFx(bot, now);
+      applyPose(bot, now);
     });
     animateCranes(now);
     stepPops(now);
@@ -2208,6 +2075,10 @@
     svg.setAttribute('role', 'img');
     svg.setAttribute('aria-label', 'Isometric Tun Labs town. Use the bot buttons to open details.');
     world.appendChild(svg);
+    actorsEl = document.createElement('div');
+    actorsEl.id = 'actors';
+    actorsEl.className = 'actors';
+    world.appendChild(actorsEl);
     buildMap();
     svg.setAttribute('viewBox', vb.x + ' ' + vb.y + ' ' + vb.w + ' ' + vb.h);
     svg.setAttribute('width', String(vb.w));
