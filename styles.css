@@ -90,7 +90,7 @@ body {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  background: rgba(255, 255, 255, 0.82);
+  background: #fffaf3;
   border-radius: 22px;
   box-shadow: var(--shadow);
 }
@@ -242,7 +242,11 @@ h1 {
   touch-action: pan-y;
   cursor: grab;
 }
-.map-cloud { opacity: 0.9; z-index: 0; }
+.map-cloud {
+  position: absolute;
+  z-index: 0;
+  opacity: 0.92;
+}
 .world { z-index: 1; }
 .demo-badge {
   position: absolute;
@@ -461,7 +465,7 @@ h1 {
   z-index: 4;
 }
 
-.pill, .bubble, .chip, .namepill, .district, .trophy-label {
+.pill, .bubble, .chip, .namepill, .trophy-label {
   position: absolute;
   color: var(--ink);
   font-weight: 750;
@@ -469,24 +473,48 @@ h1 {
   pointer-events: none;
 }
 
-.district, .trophy-label, .namepill {
+.trophy-label, .namepill {
   background: var(--paper);
   border: 1.5px solid var(--line);
   border-radius: 999px;
   box-shadow: 0 2px 0 rgba(15, 23, 42, 0.12);
   white-space: nowrap;
 }
-.district {
-  font-size: 13px;
-  padding: 3px 8px 3px 7px;
-  transform: translate(-50%, -50%);
+.sign-anchor {
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: 860;
+  pointer-events: none;
 }
-.district i {
-  display: inline-block;
-  width: 8px;
+.project-sign {
+  position: absolute;
+  left: 0;
+  bottom: 6px;
+  transform: translateX(-50%);
+  transform-origin: center bottom;
+  white-space: nowrap;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: #4a2a12;
+  background: linear-gradient(180deg, #fff6e4 0%, #f6d7a2 58%, #e8b56a 100%);
+  border: 2px solid #7a4b28;
+  border-radius: 9px;
+  padding: 3px 9px 4px;
+  box-shadow: 0 3px 0 #c4894a, inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+.project-sign::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 5px;
   height: 8px;
-  border-radius: 2px;
-  margin-right: 5px;
+  transform: translateX(-50%);
+  background: #c4894a;
+  border-radius: 0 0 2px 2px;
 }
 .trophy-label {
   font-size: 11px;
@@ -798,7 +826,7 @@ button:focus-visible, a:focus-visible {
     min-width: 0;
   }
   .who { flex: 0 0 76px; }
-  .district, .trophy-label, .namepill { font-size: 11px; }
+  .trophy-label, .namepill { font-size: 11px; }
   .bubble, .chip { max-width: 136px; font-size: 11px; }
   h1 { font-size: 1.3rem; }
   .tagline { font-size: 0.88rem; }

@@ -14,7 +14,6 @@
       name: 'CitizenPrep', color: '#ea580c', file: 'citizenprep.png', wide: 'w200',
       x: 0.33, y: 0.255,
       crane: { x: 0.41, y: 0.23 },
-      label: { x: 0.18, y: 0.06 },
       slots: [
         { x: 0.28, y: 0.325 },
         { x: 0.345, y: 0.34 },
@@ -31,7 +30,6 @@
       name: 'PayCheck Easy', color: '#059669', file: 'paycheck.png', wide: 'w200',
       x: 0.67, y: 0.24,
       crane: { x: 0.75, y: 0.21 },
-      label: { x: 0.84, y: 0.06 },
       slots: [
         { x: 0.62, y: 0.31 },
         { x: 0.69, y: 0.325 },
@@ -48,7 +46,6 @@
       name: 'NokorGo', color: '#d97706', file: 'nokorgo.png', wide: 'w200',
       x: 0.19, y: 0.50,
       crane: { x: 0.30, y: 0.44 },
-      label: { x: 0.045, y: 0.40 },
       slots: [
         { x: 0.15, y: 0.575 },
         { x: 0.22, y: 0.585 },
@@ -65,7 +62,6 @@
       name: 'HQ', color: '#2563eb', file: 'hq.png', wide: 'w214',
       x: 0.50, y: 0.47,
       crane: { x: 0.58, y: 0.42 },
-      label: { x: 0.50, y: 0.08 },
       slots: [
         { x: 0.45, y: 0.55 },
         { x: 0.52, y: 0.565 },
@@ -79,10 +75,9 @@
       ]
     },
     rest: {
-      name: 'Resting', color: '#16a34a', file: 'garden.png', wide: 'w250',
+      name: 'Resting Garden', color: '#16a34a', file: 'garden.png', wide: 'w250',
       x: 0.80, y: 0.51,
       crane: null,
-      label: { x: 0.96, y: 0.40 },
       slots: [
         { x: 0.73, y: 0.57 },
         { x: 0.79, y: 0.59 },
@@ -95,10 +90,9 @@
       trophies: []
     },
     etsy: {
-      name: 'Etsy shop', color: '#e11d48', file: 'etsy.png', wide: 'w200',
+      name: 'Etsy Shop', color: '#e11d48', file: 'etsy.png', wide: 'w200',
       x: 0.33, y: 0.72,
       crane: { x: 0.41, y: 0.68 },
-      label: { x: 0.46, y: 0.64 },
       slots: [
         { x: 0.27, y: 0.78 },
         { x: 0.34, y: 0.79 },
@@ -306,6 +300,15 @@
       var s = STATIONS[id];
       var bld = addProp(s.x, s.y, s.file, s.wide);
       bld.dataset.station = id;
+      s.bldEl = bld;
+      var anchor = document.createElement('div');
+      anchor.className = 'sign-anchor';
+      var sign = document.createElement('div');
+      sign.className = 'project-sign';
+      sign.textContent = s.name;
+      anchor.appendChild(sign);
+      sceneEl.appendChild(anchor);
+      s.signEl = sign;
       if (s.crane) {
         var crane = addProp(s.crane.x, s.crane.y, 'crane.png', 'w108');
         crane.classList.add('crane');
@@ -313,15 +316,6 @@
         crane.hidden = true;
         s.craneEl = crane;
       }
-      var label = document.createElement('div');
-      label.className = 'district';
-      var swatch = document.createElement('i');
-      swatch.style.background = s.color;
-      label.appendChild(swatch);
-      label.appendChild(document.createTextNode(s.name));
-      labelsEl.appendChild(label);
-      label._fx = s.label.x;
-      label._fy = s.label.y;
     });
   }
 
@@ -690,6 +684,7 @@
       el.style.transform = side < 0 ? 'none' : (side > 0 ? 'translate(-100%, 0)' : 'translate(-50%, 0)');
       el.style.left = x + 'px';
       el.style.top = y + 'px';
+      dodgeSigns(el, true);
     });
   }
 
@@ -722,6 +717,7 @@
       }
       x += w + gap;
       if (h > rowH) rowH = h;
+      dodgeSigns(el, true);
     });
   }
 
@@ -789,16 +785,108 @@
     });
   }
 
+  function updateSigns() {
+    var base = fitScale > 0 ? fitScale : (cam.s || 1);
+    var boost = Math.min(1.4, Math.max(1, Math.sqrt((cam.s || base) / base)));
+    var k = boost / Math.max(0.18, cam.s || base);
+    Object.keys(STATIONS).forEach(function (id) {
+      var s = STATIONS[id];
+      if (!s.signEl || !s.bldEl) return;
+      var img = s.bldEl.querySelector('img');
+      var w = img.offsetWidth || 200;
+      var h = img.naturalWidth ? w * img.naturalHeight / img.naturalWidth : (img.offsetHeight || 180);
+      var anchor = s.signEl.parentElement;
+      anchor.style.left = (s.x * IW) + 'px';
+      anchor.style.top = (s.y * IH - h) + 'px';
+      var dropScreen = stage.clientWidth < 640 ? 18 : 2;
+      var drop = dropScreen / Math.max(0.18, cam.s || base);
+      s.signEl.style.bottom = (-drop) + 'px';
+      s.signEl.style.transform = 'translateX(-50%) scale(' + k.toFixed(4) + ')';
+    });
+  }
+
+  function dodgeSigns(el, preferUp) {
+    var guard = 0;
+    while (guard++ < 6) {
+      var r = el.getBoundingClientRect();
+      var hit = null;
+      var signs = sceneEl.querySelectorAll('.project-sign');
+      var i;
+      for (i = 0; i < signs.length; i++) {
+        var b = signs[i].getBoundingClientRect();
+        var ix = Math.min(r.right, b.right) - Math.max(r.left, b.left);
+        var iy = Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top);
+        if (ix > 2 && iy > 2) { hit = iy; break; }
+      }
+      if (!hit) break;
+      var dy = (preferUp ? -1 : 1) * (hit + 4);
+      var next = parseFloat(el.style.top) + dy;
+      var bounds = stage.getBoundingClientRect();
+      var sr = stage.getBoundingClientRect();
+      if (preferUp && r.top + dy < sr.top + 4) break;
+      if (!preferUp && r.bottom + dy > bounds.bottom - 4) break;
+      el.style.top = next + 'px';
+    }
+  }
+
+  function nudgeNamesOffSigns(els) {
+    var boxes = [];
+    sceneEl.querySelectorAll('.project-sign').forEach(function (sign) {
+      if (sign.getClientRects().length) boxes.push(sign.getBoundingClientRect());
+    });
+    var bounds = stage.getBoundingClientRect();
+    var n, i, k;
+    for (n = 0; n < 10; n++) {
+      var moved = false;
+      for (i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (!el.classList.contains('namepill') && !el.classList.contains('trophy-label')) continue;
+        var r = el.getBoundingClientRect();
+        for (k = 0; k < boxes.length; k++) {
+          var b = boxes[k];
+          var ix = Math.min(r.right, b.right) - Math.max(r.left, b.left);
+          var iy = Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top);
+          if (ix < 3 || iy < 3) continue;
+          var cy = (r.top + r.bottom) / 2;
+          var by = (b.top + b.bottom) / 2;
+          var step = Math.min(16, iy + 3);
+          el.style.top = (parseFloat(el.style.top) + (cy >= by ? step : -step)) + 'px';
+          r = el.getBoundingClientRect();
+          moved = true;
+        }
+      }
+      if (!moved) break;
+    }
+    els.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      var dx = 0;
+      var dy = 0;
+      if (r.left < bounds.left + 4) dx = bounds.left + 4 - r.left;
+      if (r.right > bounds.right - 4) dx = bounds.right - 4 - r.right;
+      if (r.top < bounds.top + 4) dy = bounds.top + 4 - r.top;
+      if (r.bottom > bounds.bottom - 4) dy = bounds.bottom - 4 - r.bottom;
+      if (dx || dy) {
+        el.style.left = (parseFloat(el.style.left) + dx) + 'px';
+        el.style.top = (parseFloat(el.style.top) + dy) + 'px';
+      }
+      if (el._baseL != null) {
+        el._dx = parseFloat(el.style.left) - el._baseL;
+        el._dy = parseFloat(el.style.top) - el._baseT;
+      }
+    });
+  }
+
   function positionOverlays() {
     var compact = stage.clientWidth < 640;
     if (compact !== labelsCompact) {
       labelsCompact = compact;
       labelKey = '';
       labelsEl.classList.toggle('is-compact', compact);
-      labelsEl.querySelectorAll('.district, .trophy-label').forEach(function (el) {
+      labelsEl.querySelectorAll('.trophy-label').forEach(function (el) {
         el.hidden = compact;
       });
     }
+    updateSigns();
     var pinned = [];
     var docked = [];
     BOTS.forEach(function (bot) {
@@ -821,12 +909,6 @@
       bot._calloutSide = station === STATIONS.hq ? 0 : (station.x < 0.48 ? -1 : 1);
     });
     if (!compact) {
-      labelsEl.querySelectorAll('.district').forEach(function (el) {
-        if (el.hidden) return;
-        var p = worldToStage(el._fx, el._fy);
-        pinLabel(el, p.x, p.y);
-        pinned.push(el);
-      });
       sceneEl.querySelectorAll('[data-trophy]').forEach(function (g) {
         if (!g._label || g._label.hidden) return;
         var p = worldToStage(g._fx, g._fy);
@@ -845,6 +927,7 @@
         el._dy = 0;
       });
       separateLabels(pinned);
+      nudgeNamesOffSigns(pinned);
       labelKey = key;
     }
     if (compact) layoutDock(docked);
