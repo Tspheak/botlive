@@ -1,0 +1,113 @@
+{
+  "updated": "2026-10-11T10:00:00Z",
+  "bots": [
+    {
+      "id": "atlas",
+      "state": "working",
+      "project": "hq",
+      "task": "Building Bot Live",
+      "progress": 60,
+      "message": ""
+    },
+    {
+      "id": "dex",
+      "state": "waiting",
+      "project": "citizenprep",
+      "task": "",
+      "progress": 0,
+      "message": "v7 ready, test it on your Pixel"
+    },
+    {
+      "id": "ledger",
+      "state": "working",
+      "project": "paycheck",
+      "task": "Overtime pay",
+      "progress": 70,
+      "message": ""
+    },
+    {
+      "id": "iris",
+      "state": "idle",
+      "project": "",
+      "task": "",
+      "progress": 0,
+      "message": ""
+    },
+    {
+      "id": "harbor",
+      "state": "waiting",
+      "project": "paycheck",
+      "task": "",
+      "progress": 0,
+      "message": "Need Play Console info"
+    },
+    {
+      "id": "scout",
+      "state": "working",
+      "project": "nokorgo",
+      "task": "Researching places",
+      "progress": 40,
+      "message": ""
+    },
+    {
+      "id": "vista",
+      "state": "idle",
+      "project": "",
+      "task": "",
+      "progress": 0,
+      "message": ""
+    }
+  ],
+  "built": [
+    { "project": "citizenprep", "label": "Unity ads", "date": "2026-10-10" },
+    { "project": "citizenprep", "label": "Quiz app", "date": "2026-09-12" },
+    { "project": "paycheck", "label": "Multi-job", "date": "2026-09-02" },
+    { "project": "paycheck", "label": "Tips", "date": "2026-10-11" },
+    { "project": "etsy", "label": "Shop open", "date": "2026-08-18" },
+    { "project": "nokorgo", "label": "Plan & mockups", "date": "2026-10-08" }
+  ],
+  "events": [
+    {
+      "time": "2026-10-11T09:58:00Z",
+      "text": "Ledger started overtime pay",
+      "bot": "ledger",
+      "kind": "work"
+    },
+    {
+      "time": "2026-10-11T09:30:00Z",
+      "text": "Atlas is building Bot Live at HQ",
+      "bot": "atlas",
+      "kind": "work"
+    },
+    {
+      "time": "2026-10-11T08:55:00Z",
+      "text": "Tips building finished in PayCheck Easy",
+      "bot": "ledger",
+      "kind": "built"
+    },
+    {
+      "time": "2026-10-11T08:15:00Z",
+      "text": "Harbor is waiting on Play Console info",
+      "bot": "harbor",
+      "kind": "wait"
+    },
+    {
+      "time": "2026-10-11T06:50:00Z",
+      "text": "Dex is waiting on you: v7 Pixel test",
+      "bot": "dex",
+      "kind": "wait"
+    },
+    {
+      "time": "2026-10-11T04:55:00Z",
+      "text": "Scout moved to NokorGo district",
+      "bot": "scout",
+      "kind": "move"
+    },
+    {
+      "time": "2026-10-10T18:00:00Z",
+      "text": "Unity ads built in CitizenPrep",
+      "bot": "dex",
+      "kind": "built"
+    }
+  ]
+}
