@@ -277,15 +277,15 @@ h1 {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1280px;
-  height: 640px;
+  width: 1600px;
+  height: 900px;
 }
 .scene .island {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1280px;
-  height: 640px;
+  width: 1600px;
+  height: 900px;
   z-index: 1;
   pointer-events: none;
   user-select: none;

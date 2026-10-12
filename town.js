@@ -2,8 +2,8 @@
 (function () {
   'use strict';
 
-  var IW = 1280;
-  var IH = 640;
+  var IW = 1600;
+  var IH = 900;
   var DEMO = new URLSearchParams(location.search).get('demo') === '1';
   var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var SPEED = REDUCE ? 2.4 : 0.105;
@@ -11,138 +11,132 @@
 
   var STATIONS = {
     citizenprep: {
-      name: 'CitizenPrep', color: '#ea580c', file: 'citizenprep.png', wide: 'w200',
-      x: 0.33, y: 0.255,
-      crane: { x: 0.41, y: 0.23 },
+      name: 'CitizenPrep', color: '#0ea5e9', file: 'citizenprep.png', w: 240,
+      x: 0.340, y: 0.287,
+      crane: { x: 0.44, y: 0.30 },
       slots: [
-        { x: 0.28, y: 0.325 },
-        { x: 0.345, y: 0.34 },
-        { x: 0.40, y: 0.315 }
+        { x: 0.30, y: 0.36 },
+        { x: 0.345, y: 0.378 },
+        { x: 0.39, y: 0.36 }
       ],
       trophies: [
-        { x: 0.24, y: 0.20 },
-        { x: 0.40, y: 0.16 },
-        { x: 0.22, y: 0.30 },
-        { x: 0.43, y: 0.28 }
+        { x: 0.26, y: 0.24 },
+        { x: 0.43, y: 0.24 },
+        { x: 0.25, y: 0.33 },
+        { x: 0.44, y: 0.34 }
       ]
     },
     paycheck: {
-      name: 'PayCheck Easy', color: '#059669', file: 'paycheck.png', wide: 'w200',
-      x: 0.67, y: 0.24,
-      crane: { x: 0.75, y: 0.21 },
+      name: 'PayCheck Easy', color: '#f59e0b', file: 'paycheck.png', w: 300,
+      x: 0.682, y: 0.291,
+      crane: { x: 0.78, y: 0.30 },
       slots: [
-        { x: 0.62, y: 0.31 },
-        { x: 0.69, y: 0.325 },
-        { x: 0.75, y: 0.29 }
+        { x: 0.64, y: 0.36 },
+        { x: 0.685, y: 0.378 },
+        { x: 0.73, y: 0.36 }
       ],
       trophies: [
-        { x: 0.58, y: 0.16 },
-        { x: 0.76, y: 0.15 },
-        { x: 0.60, y: 0.28 },
-        { x: 0.78, y: 0.27 }
+        { x: 0.60, y: 0.24 },
+        { x: 0.77, y: 0.24 },
+        { x: 0.59, y: 0.34 },
+        { x: 0.78, y: 0.34 }
       ]
     },
     nokorgo: {
-      name: 'NokorGo', color: '#d97706', file: 'nokorgo.png', wide: 'w200',
-      x: 0.19, y: 0.50,
-      crane: { x: 0.30, y: 0.44 },
+      name: 'NokorGo', color: '#d97706', file: 'nokorgo.png', w: 250,
+      x: 0.157, y: 0.533,
+      crane: { x: 0.26, y: 0.50 },
       slots: [
-        { x: 0.15, y: 0.575 },
-        { x: 0.22, y: 0.585 },
-        { x: 0.28, y: 0.55 }
+        { x: 0.12, y: 0.60 },
+        { x: 0.165, y: 0.62 },
+        { x: 0.22, y: 0.60 }
       ],
       trophies: [
-        { x: 0.10, y: 0.44 },
-        { x: 0.26, y: 0.42 },
-        { x: 0.12, y: 0.56 },
-        { x: 0.30, y: 0.50 }
+        { x: 0.08, y: 0.48 },
+        { x: 0.24, y: 0.46 },
+        { x: 0.08, y: 0.58 },
+        { x: 0.25, y: 0.56 }
       ]
     },
     hq: {
-      name: 'HQ', color: '#2563eb', file: 'hq.png', wide: 'w214',
-      x: 0.50, y: 0.47,
-      crane: { x: 0.58, y: 0.42 },
+      name: 'HQ', color: '#38bdf8', file: 'hq.png', w: 230,
+      x: 0.503, y: 0.535,
+      crane: { x: 0.60, y: 0.48 },
       slots: [
-        { x: 0.45, y: 0.55 },
-        { x: 0.52, y: 0.565 },
-        { x: 0.58, y: 0.53 }
+        { x: 0.46, y: 0.61 },
+        { x: 0.505, y: 0.63 },
+        { x: 0.55, y: 0.61 }
       ],
       trophies: [
-        { x: 0.42, y: 0.40 },
-        { x: 0.58, y: 0.38 },
-        { x: 0.40, y: 0.52 },
-        { x: 0.60, y: 0.50 }
+        { x: 0.42, y: 0.46 },
+        { x: 0.59, y: 0.46 },
+        { x: 0.42, y: 0.58 },
+        { x: 0.58, y: 0.58 }
       ]
     },
     rest: {
-      name: 'Resting Garden', color: '#16a34a', file: 'garden.png', wide: 'w250',
-      x: 0.80, y: 0.51,
+      name: 'Resting area', color: '#22d3ee', file: 'rest.png', w: 260,
+      x: 0.838, y: 0.534,
       crane: null,
       slots: [
-        { x: 0.73, y: 0.57 },
-        { x: 0.79, y: 0.59 },
-        { x: 0.85, y: 0.565 },
-        { x: 0.74, y: 0.63 },
-        { x: 0.81, y: 0.64 },
-        { x: 0.87, y: 0.61 },
-        { x: 0.70, y: 0.53 }
+        { x: 0.80, y: 0.60 },
+        { x: 0.845, y: 0.62 },
+        { x: 0.89, y: 0.60 },
+        { x: 0.78, y: 0.64 },
+        { x: 0.84, y: 0.66 },
+        { x: 0.90, y: 0.64 },
+        { x: 0.76, y: 0.57 }
       ],
       trophies: []
     },
     etsy: {
-      name: 'Etsy Shop', color: '#e11d48', file: 'etsy.png', wide: 'w200',
-      x: 0.33, y: 0.72,
-      crane: { x: 0.41, y: 0.68 },
+      name: 'Etsy Shop', color: '#38bdf8', file: 'etsy.png', w: 220,
+      x: 0.310, y: 0.805,
+      crane: { x: 0.40, y: 0.78 },
       slots: [
-        { x: 0.27, y: 0.78 },
-        { x: 0.34, y: 0.79 },
-        { x: 0.40, y: 0.76 }
+        { x: 0.27, y: 0.86 },
+        { x: 0.315, y: 0.88 },
+        { x: 0.36, y: 0.86 }
       ],
       trophies: [
-        { x: 0.24, y: 0.66 },
-        { x: 0.42, y: 0.66 },
-        { x: 0.22, y: 0.76 },
-        { x: 0.43, y: 0.74 }
+        { x: 0.24, y: 0.74 },
+        { x: 0.39, y: 0.74 },
+        { x: 0.23, y: 0.84 },
+        { x: 0.40, y: 0.84 }
       ]
     }
   };
 
   var NODES = {
-    cp: { x: 0.33, y: 0.31 },
-    cpj: { x: 0.34, y: 0.38 },
-    north: { x: 0.50, y: 0.30 },
-    pay: { x: 0.66, y: 0.29 },
-    hq: { x: 0.50, y: 0.50 },
-    midw: { x: 0.32, y: 0.50 },
-    nok: { x: 0.20, y: 0.52 },
-    mide: { x: 0.66, y: 0.52 },
-    rest: { x: 0.76, y: 0.55 },
-    south: { x: 0.36, y: 0.62 },
-    etsy: { x: 0.34, y: 0.72 }
+    cp: { x: 0.38, y: 0.36 },
+    cpj: { x: 0.44, y: 0.44 },
+    hqn: { x: 0.50, y: 0.46 },
+    pay: { x: 0.62, y: 0.36 },
+    payj: { x: 0.56, y: 0.44 },
+    nok: { x: 0.28, y: 0.53 },
+    hqw: { x: 0.40, y: 0.53 },
+    hq: { x: 0.50, y: 0.54 },
+    hqe: { x: 0.62, y: 0.53 },
+    rest: { x: 0.72, y: 0.53 },
+    etsy: { x: 0.34, y: 0.72 },
+    sth: { x: 0.42, y: 0.64 },
+    hqs: { x: 0.50, y: 0.62 }
   };
   var LINKS = {
     cp: ['cpj'],
-    cpj: ['cp', 'north', 'midw'],
-    north: ['cpj', 'pay', 'hq'],
-    pay: ['north'],
-    hq: ['north', 'midw', 'mide', 'south'],
-    midw: ['cpj', 'nok', 'hq', 'south'],
-    nok: ['midw'],
-    mide: ['hq', 'rest'],
-    rest: ['mide'],
-    south: ['hq', 'midw', 'etsy'],
-    etsy: ['south']
+    cpj: ['cp', 'hqn'],
+    hqn: ['cpj', 'payj', 'hq'],
+    pay: ['payj'],
+    payj: ['pay', 'hqn'],
+    nok: ['hqw'],
+    hqw: ['nok', 'hq'],
+    hq: ['hqn', 'hqw', 'hqe', 'hqs'],
+    hqe: ['hq', 'rest'],
+    rest: ['hqe'],
+    etsy: ['sth'],
+    sth: ['etsy', 'hqs'],
+    hqs: ['sth', 'hq']
   };
-
-  var TREES = [
-    [0.09, 0.31, 0.9], [0.16, 0.21, 1.05], [0.55, 0.12, 0.85], [0.77, 0.29, 1],
-    [0.78, 0.36, 0.8], [0.88, 0.66, 1.1], [0.91, 0.59, 0.9], [0.08, 0.56, 0.85],
-    [0.62, 0.74, 0.95], [0.48, 0.24, 0.75], [0.94, 0.46, 0.9], [0.69, 0.84, 0.8]
-  ];
-  var FLOWERS = [
-    [0.12, 0.34, 0.7], [0.58, 0.16, 0.65], [0.84, 0.34, 0.75], [0.12, 0.58, 0.6],
-    [0.72, 0.32, 0.7], [0.90, 0.62, 0.65], [0.56, 0.78, 0.7], [0.22, 0.22, 0.6]
-  ];
 
   var BOT_META = [
     { id: 'atlas', name: 'Atlas', role: 'Coordinator', sips: true, delay: 0.15, color: '#0f766e' },
@@ -175,8 +169,8 @@
     BOT_META.forEach(function (meta) {
       POSES.forEach(function (pose) { urls.push(spriteSrc(meta.id, pose)); });
     });
-    ['island.png', 'citizenprep.png', 'paycheck.png', 'nokorgo.png', 'etsy.png', 'hq.png', 'garden.png',
-      'crane.png', 'trophy_house.png', 'check_sign.png', 'star_trophy.png', 'tree.png', 'flowers.png'
+    ['island.png', 'citizenprep.png', 'paycheck.png', 'nokorgo.png', 'etsy.png', 'hq.png', 'rest.png',
+      'crane.png', 'trophy_house.png', 'check_sign.png', 'star_trophy.png'
     ].forEach(function (file) { urls.push(townSrc(file)); });
     urls.forEach(function (src) {
       var img = new Image();
@@ -277,7 +271,7 @@
     sceneEl = document.createElement('div');
     sceneEl.className = 'scene';
     sceneEl.setAttribute('role', 'img');
-    sceneEl.setAttribute('aria-label', 'Tun Labs island. Sandy paths join the project clearings. Use the bot buttons to open details.');
+    sceneEl.setAttribute('aria-label', 'Tun Labs island. Glowing paths join the project plots. Use the bot buttons to open details.');
     var island = makeImg('island.png', '');
     island.className = 'island';
     island.style.width = IW + 'px';
@@ -287,18 +281,10 @@
     world.style.width = IW + 'px';
     world.style.height = IH + 'px';
 
-    TREES.forEach(function (t) {
-      var el = addProp(t[0], t[1], 'tree.png', 'w78');
-      el.querySelector('img').style.width = Math.round(78 * t[2]) + 'px';
-    });
-    FLOWERS.forEach(function (t) {
-      var el = addProp(t[0], t[1], 'flowers.png', 'w56');
-      el.querySelector('img').style.width = Math.round(56 * t[2]) + 'px';
-    });
-
     Object.keys(STATIONS).forEach(function (id) {
       var s = STATIONS[id];
-      var bld = addProp(s.x, s.y, s.file, s.wide);
+      var bld = addProp(s.x, s.y, s.file, '');
+      bld.querySelector('img').style.width = s.w + 'px';
       bld.dataset.station = id;
       s.bldEl = bld;
       var anchor = document.createElement('div');
@@ -460,7 +446,7 @@
   }
 
   function projectName(id) {
-    return (STATIONS[id] && STATIONS[id].name) || 'the garden';
+    return (STATIONS[id] && STATIONS[id].name) || 'the resting area';
   }
 
   function normalizeProject(p) {
@@ -1353,12 +1339,12 @@
     state.className = 'state-pill ' + bot.state;
     state.textContent = bot.state === 'waiting' ? 'Waiting on you' : bot.state === 'working' ? 'Working' : 'Idle';
     document.getElementById('card-project').textContent = bot.state === 'idle' || !bot.project
-      ? 'In the resting garden'
+      ? 'In the resting area'
       : projectName(bot.project);
     var detail = document.getElementById('card-detail');
     if (bot.state === 'waiting') detail.textContent = bot.message || 'Waiting on you';
     else if (bot.state === 'working') detail.textContent = bot.task || 'Working';
-    else detail.textContent = bot.sips ? 'Sipping coffee on the couch.' : 'Dozing under the trees.';
+    else detail.textContent = bot.sips ? 'Sipping coffee in the resting area.' : 'Dozing in the resting area.';
     var wrap = document.getElementById('card-bar-wrap');
     if (bot.state === 'working') {
       wrap.hidden = false;

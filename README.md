@@ -1,8 +1,8 @@
 # Tun Labs Town
 
-A live island studio for Tun Labs. Bots walk the sandy paths to a project clearing while they work, wait on the owner with a speech bubble, or rest in the garden. Finished work pops in around that clearing.
+A live island studio for Tun Labs. Bots walk the glowing paths to a project plot while they work, wait on the owner with a speech bubble, or rest in the charging lounge. Finished work pops in around that plot.
 
-The page is plain HTML, CSS, and JavaScript. There is no build step. The map is the painted island in `assets/town/`. Bot art is the mochi sprite set in `assets/sprites/` (`idle`, `walk1`, `walk2`, `work`, and `rest` for each bot). Bots follow the sandy paths between clearings. GitHub Pages should serve this repository from the **main** branch, **root** folder, at [https://tspheak.github.io/botlive/](https://tspheak.github.io/botlive/).
+The page is plain HTML, CSS, and JavaScript. There is no build step. The map is the robot-tech island in `assets/town/`. Bot art is the mochi sprite set in `assets/sprites/` (`idle`, `walk1`, `walk2`, `work`, and `rest` for each bot). Bots follow the circuit paths between plots. GitHub Pages should serve this repository from the **main** branch, **root** folder, at [https://tspheak.github.io/botlive/](https://tspheak.github.io/botlive/).
 
 ## Run it locally
 
@@ -20,7 +20,7 @@ All live state comes from [`status.json`](status.json) in the repository root. T
 
 To update the town, commit a new `status.json` to `main` (open a pull request if that is how this repo lands changes). Within about half a minute the page will:
 
-- walk a bot to a new station, the resting garden, or a waiting spot
+- walk a bot to a new station, the resting area, or a waiting spot
 - update task labels and progress bars
 - pop a new finished building in with sparkles
 - prepend anything new in the news feed
@@ -73,7 +73,7 @@ One object per bot. Unknown ids are ignored. If a known bot is missing, it is tr
 
 - `working` — walks to `project` and plays that bot’s work animation (hammer, typing, magnifier, and so on) with the task and progress bar.
 - `waiting` — walks to `project`, shows an orange ring, and a bubble with `message`.
-- `idle` — walks to the resting garden. Some bots doze (`zzz`); some sip coffee.
+- `idle` — walks to the resting area. Some bots doze (`zzz`); some sip coffee.
 
 **Project ids**
 
